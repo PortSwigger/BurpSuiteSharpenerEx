@@ -17,6 +17,9 @@ repositories {
     }
 }
 
+targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_17
+
 dependencies {
     implementation "net.portswigger.burp.extensions:montoya-api:2023.1"
     implementation "com.github.CoreyD97:Burp-Montoya-Utilities:86c912a" //https://jitpack.io/com/github/CoreyD97/Burp-Montoya-Utilities/86c912a/
