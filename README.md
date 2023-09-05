@@ -1,8 +1,6 @@
-# About this repository
-Continuation of the Burp Suite Sharpener project originally from https://github.com/mdsecresearch/BurpSuiteSharpener.
-
 # Burp Suite Sharpener
-This extension should add a number of UI and functional features to Burp Suite to make working with it a bit easier. The latest version only works with the Montoya API which should be available in Burp Suite 2023.1 or higher.
+This extension should add a number of UI and functional features to Burp Suite to make working with it a bit easier.
+The latest version of this extension is only compatible with Burp Suite version 2023.10-22956 and above.
 
 <pre>
  ___  _                                      
@@ -10,20 +8,15 @@ This extension should add a number of UI and functional features to Burp Suite t
 \__ \| . |<_> || '_>| . \/ ._>| ' |/ ._>| '_>
 <___/|_|_|<___||_|  |  _/\___.|_|_|\___.|_|
                     |_|
-v3.6
 </pre>
 
+![src/main/resources/sharpener.png](src/main/resources/sharpener.png)
+
 # Installation
-* Download the latest jar file built by GitHub from [/releases/latest](https://github.com/mdsecresearch/BurpSuiteSharpener/releases/latest), or by going through the [Workflows' Artifacts](https://github.com/mdsecresearch/BurpSuiteSharpener/actions).
+* Download the latest jar file built by GitHub from [/releases/latest](https://github.com/irsdl/BurpSuiteSharpenerEx/releases/latest), or by going through the [Workflows' Artifacts](https://github.com/irsdl/BurpSuiteSharpenerEx/actions).
 * Add it to Burp Suite using the Extender tab
 
-# Using the Legacy Extension
-The latest version of this extension is only compatible with Burp Suite version 2023.1 and above due to the full support of Montoya API.
-The older versions of this extension can be downloaded from the legacy branch:
-https://github.com/mdsecresearch/BurpSuiteSharpener/tree/Legacy-Extension/release
-The legacy branch will not receive any future updates.
-
-# Current Features
+# Features
 * Making main tools' tabs more distinguishable by choosing a theme
 * Ability to control style of sub-tabs in Repeater and Intruder
 * Ability to change Burp Suite title and its icon
@@ -46,14 +39,24 @@ The legacy branch will not receive any future updates.
 
 # Burp Suite Compatibility and Reporting Errors
 As PortSwigger has a plan to update Burp Suite UI in a near future, some features in this extension may become redundant or unreliable.
-While we use this extension ourselves we can see potential errors from time to time, as an open source project, it relies on the community feedback for improvements and to fix the issues. Please report any errors in [issues](https://github.com/mdsecresearch/BurpSuiteSharpener/issues).
+While we use this extension ourselves we can see potential errors from time to time, as an open source project, it relies on the community feedback for improvements and to fix the issues. Please report any errors in [issues](https://github.com/irsdl/BurpSuiteSharpenerEx/issues).
 
 This extension has been tested against the latest early edition of pro version which was 2023.1 at the time of writing this document. It should however be also compatible with the community edition.
+
+# Using the Legacy Extension
+In the latest version of this extension, only the most recent version of Burp Suite is supported, as noted above. For older versions of Burp Suite, you can use the legacy version of the extension or refer to the original repository.
+The older versions of this extension can be downloaded from the legacy branch (with no support):
+https://github.com/mdsecresearch/BurpSuiteSharpener/tree/Legacy-Extension/release
+or
+https://github.com/mdsecresearch/BurpSuiteSharpener/releases
+
+# About this repository
+Continuation of the Burp Suite Sharpener project originally from https://github.com/mdsecresearch/BurpSuiteSharpener.
 
 # Suggesting New Features
 The plan is to add simple but effective missing features to this single extension to make tester's life easier as a must-have companion when using Burp Suite (so we cannot Burp without it!).
 
-Please feel free to submit your new feature requests using `FR: ` in its title in [issues](https://github.com/mdsecresearch/BurpSuiteSharpener/issues).
+Please feel free to submit your new feature requests using `FR: ` in its title in [issues](https://github.com/irsdl/BurpSuiteSharpenerEx/issues).
 
 It would be great to also list any known available extensions which might have implemented suggested features. 
 Perhaps the best features can be imported from different open-source extensions so the overhead of adding different extensions can be reduced.
@@ -90,7 +93,7 @@ Perhaps the best features can be imported from different open-source extensions 
 * After setting style on a sub-tab, setting the same title on another sub-tab will copy its style
 * Alt + Any Mouse Click works on empty parts of the tabs which do not contain any text
 * Use the `Debug` option in `Global Settings` if you are reporting a bug or if you want to see what is happening
-* Check the [extension's GitHub repository](https://github.com/mdsecresearch/BurpSuiteSharpener) rather than BApp Store for the latest updates
+* Check the [extension's GitHub repository](https://github.com/irsdl/BurpSuiteSharpenerEx) rather than BApp Store for the latest updates
 * A sample of icons should also be accessible in the `/` directory
 
 ![images/img.png](images/img.png)
