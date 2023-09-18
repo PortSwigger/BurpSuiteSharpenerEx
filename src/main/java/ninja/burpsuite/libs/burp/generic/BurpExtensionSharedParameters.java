@@ -21,6 +21,8 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BurpExtensionSharedParameters {
 
@@ -91,11 +93,11 @@ public class BurpExtensionSharedParameters {
     private Image _originalBurpIcon = null; // Burp Suite's original frame icon
     private boolean _isUILoaded = false; // Burp Suite's original frame icon
 
-    public enum DebugLevels{
-                None("Disabled", 0),
-                Verbose("Verbose", 1),
-                VerboseAndPrefsRW("Verbose + Show Preferences Read/Write", 2),
-                VeryVerbose("Very Verbose", 3),
+    public enum DebugLevels {
+        None("Disabled", 0),
+        Verbose("Verbose", 1),
+        VerboseAndPrefsRW("Verbose + Show Preferences Read/Write", 2),
+        VeryVerbose("Very Verbose", 3),
         ;
 
         private final String name;
@@ -114,13 +116,17 @@ public class BurpExtensionSharedParameters {
             return name;
         }
 
-        public int getValue() { return value; }
+        public int getValue() {
+            return value;
+        }
 
-        public String getName() { return name; }
+        public String getName() {
+            return name;
+        }
 
     }
 
-    public BurpExtensionSharedParameters(){
+    public BurpExtensionSharedParameters() {
 
     }
 
@@ -140,13 +146,13 @@ public class BurpExtensionSharedParameters {
         features.hasHttpRequestEditor = Boolean.parseBoolean(properties.getProperty("hasHttpRequestEditor"));
         features.hasHttpResponseEditor = Boolean.parseBoolean(properties.getProperty("hasHttpResponseEditor"));
         features.isCommunityVersionCompatible = Boolean.parseBoolean(properties.getProperty("isCommunityVersionCompatible"));
-        features.minSupportedMajorVersionInclusive = NumberUtils.toDouble(properties.getProperty("minSupportedMajorVersionInclusive"),2);
-        features.minSupportedMinorVersionInclusive = NumberUtils.toDouble(properties.getProperty("minSupportedMinorVersionInclusive"),2023);
+        features.minSupportedMajorVersionInclusive = NumberUtils.toDouble(properties.getProperty("minSupportedMajorVersionInclusive"), 2);
+        features.minSupportedMinorVersionInclusive = NumberUtils.toDouble(properties.getProperty("minSupportedMinorVersionInclusive"), 2023);
 
         initParameters(properties.getProperty("name"), properties.getProperty("version"), properties.getProperty("url"), properties.getProperty("issueTracker"), properties.getProperty("copyright"), properties.getProperty("propertiesFileUrl"), extensionMainClass, montoyaApi, features);
     }
 
-    private void initParameters(String extensionName, String version, String extensionURL, String extensionIssueTracker, String extensionCopyrightMessage, String extensionPropertiesUrl, BurpExtension burpExtenderObj, MontoyaApi montoyaApi, BurpExtensionFeatures burpExtensionFeatures){
+    private void initParameters(String extensionName, String version, String extensionURL, String extensionIssueTracker, String extensionCopyrightMessage, String extensionPropertiesUrl, BurpExtension burpExtenderObj, MontoyaApi montoyaApi, BurpExtensionFeatures burpExtensionFeatures) {
         this.version = version;
         this.extensionName = extensionName;
         this.extensionURL = extensionURL;
@@ -165,8 +171,29 @@ public class BurpExtensionSharedParameters {
             if (montoyaApi.burpSuite().version().edition().name().toLowerCase().contains("professional"))
                 this.isBurpPro = true;
 
-            this.burpMajorVersion = Double.parseDouble(montoyaApi.burpSuite().version().major());
-            this.burpMinorVersion = Double.parseDouble(montoyaApi.burpSuite().version().minor());
+            try{
+                this.burpMajorVersion = Double.parseDouble(montoyaApi.burpSuite().version().major());
+            }catch(Exception e){
+                // this means the major version now cannot be converted to numbers!
+                // a regular expression to match the numbers with an optional decimal pointer following by two digits
+                String regex = "\\b(\\d+\\.\\d{1,2}|\\d+)\\b";
+                Matcher m = Pattern.compile(regex).matcher(montoyaApi.burpSuite().version().major());
+                if (m.find()) {
+                    this.burpMajorVersion = Double.parseDouble(m.group(1));
+                }
+            }
+
+            try{
+                this.burpMinorVersion = Double.parseDouble(montoyaApi.burpSuite().version().minor());
+            }catch(Exception e){
+                // this means the major version now cannot be converted to numbers!
+                // a regular expression to match the numbers with an optional decimal pointer following by two digits
+                String regex = "\\b(\\d+\\.\\d{1,2}|\\d+)\\b";
+                Matcher m = Pattern.compile(regex).matcher(montoyaApi.burpSuite().version().minor());
+                if (m.find()) {
+                    this.burpMinorVersion = Double.parseDouble(m.group(1));
+                }
+            }
 
         } catch (Exception e) {
             printlnError(e.getMessage());
@@ -188,56 +215,56 @@ public class BurpExtensionSharedParameters {
         this.printlnOutput(extensionCopyrightMessage);
 
         isCompatibleWithCurrentBurpVersion = isBurpVersionCompatible();
-        if(!isCompatibleWithCurrentBurpVersion){
+        if (!isCompatibleWithCurrentBurpVersion) {
             printlnError("This extension IS NOT COMPATIBLE with the currently used version or edition of Burp Suite.");
             printlnError("Current Burp Suite Version: Major: " + this.burpMajorVersion + " - Minor: " + this.burpMinorVersion);
             printlnError("Current Burp Suite Edition: " + montoyaApi.burpSuite().version().edition().name());
-        }else{
+        } else {
             printDebugMessage("This extension is compatible with the currently used version and edition of Burp Suite.");
         }
     }
 
-    private boolean isBurpVersionCompatible(){
+    private boolean isBurpVersionCompatible() {
         boolean isCompatible = true;
-        if (features.maxSupportedMajorVersionInclusive < features.minSupportedMajorVersionInclusive){
+        if (features.maxSupportedMajorVersionInclusive < features.minSupportedMajorVersionInclusive) {
             features.maxSupportedMajorVersionInclusive = 0;
         }
-        if (features.maxSupportedMajorVersionInclusive <= 0){
+        if (features.maxSupportedMajorVersionInclusive <= 0) {
             features.maxSupportedMajorVersionInclusive = 0;
             features.maxSupportedMinorVersionInclusive = 0;
         }
-        if (features.minSupportedMajorVersionInclusive <= 0){
+        if (features.minSupportedMajorVersionInclusive <= 0) {
             features.minSupportedMajorVersionInclusive = 0;
             features.minSupportedMinorVersionInclusive = 0;
         }
 
-        if(features.maxSupportedMajorVersionInclusive > 0){
-            if(burpMajorVersion > features.maxSupportedMajorVersionInclusive){
+        if (features.maxSupportedMajorVersionInclusive > 0) {
+            if (burpMajorVersion > features.maxSupportedMajorVersionInclusive) {
                 printlnError("Max Supported Major Version Inclusive: " + features.maxSupportedMajorVersionInclusive);
                 printlnError("Max Supported Minor Version Inclusive: " + features.maxSupportedMinorVersionInclusive);
                 return false;
             }
-            if(burpMajorVersion == features.maxSupportedMajorVersionInclusive && burpMinorVersion > features.maxSupportedMinorVersionInclusive){
+            if (burpMajorVersion == features.maxSupportedMajorVersionInclusive && burpMinorVersion > features.maxSupportedMinorVersionInclusive) {
                 printlnError("Max Supported Major Version Inclusive: " + features.maxSupportedMajorVersionInclusive);
                 printlnError("Max Supported Minor Version Inclusive: " + features.maxSupportedMinorVersionInclusive);
                 return false;
             }
         }
 
-        if(features.minSupportedMajorVersionInclusive > 0){
-            if(burpMajorVersion < features.minSupportedMajorVersionInclusive){
+        if (features.minSupportedMajorVersionInclusive > 0) {
+            if (burpMajorVersion < features.minSupportedMajorVersionInclusive) {
                 printlnError("Min Supported Major Version Inclusive: " + features.minSupportedMajorVersionInclusive);
                 printlnError("Min Supported Minor Version Inclusive: " + features.minSupportedMinorVersionInclusive);
                 return false;
             }
-            if(burpMajorVersion == features.minSupportedMajorVersionInclusive && burpMinorVersion < features.minSupportedMinorVersionInclusive){
+            if (burpMajorVersion == features.minSupportedMajorVersionInclusive && burpMinorVersion < features.minSupportedMinorVersionInclusive) {
                 printlnError("Min Supported Major Version Inclusive: " + features.minSupportedMajorVersionInclusive);
                 printlnError("Min Supported Minor Version Inclusive: " + features.minSupportedMinorVersionInclusive);
                 return false;
             }
         }
 
-        if(!features.isCommunityVersionCompatible && !isBurpPro){
+        if (!features.isCommunityVersionCompatible && !isBurpPro) {
             printlnError("This extension is not compatible with the Community edition");
             return false;
         }
@@ -263,7 +290,7 @@ public class BurpExtensionSharedParameters {
             } catch (Exception e) {
                 attemptsRemaining--;
                 try {
-                    Thread.sleep(1000L * (maxLoadAttempts-attemptsRemaining)); // 100 * `waitSeconds` * 10 = `waitSeconds` seconds
+                    Thread.sleep(1000L * (maxLoadAttempts - attemptsRemaining)); // 100 * `waitSeconds` * 10 = `waitSeconds` seconds
                 } catch (InterruptedException ignored) {
                 }
             }
@@ -307,6 +334,7 @@ public class BurpExtensionSharedParameters {
             printDebugMessage(message);
         }
     }
+
     public void printDebugMessage(String message) {
         if (debugLevel != null && debugLevel > 0 && !message.isEmpty()) {
             StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
@@ -324,7 +352,7 @@ public class BurpExtensionSharedParameters {
     }
 
     public void printException(Exception error) {
-        if(error != null) {
+        if (error != null) {
             montoyaApi.logging().logToError(error.getMessage());
 
             for (StackTraceElement elem : error.getStackTrace()) {
@@ -334,29 +362,35 @@ public class BurpExtensionSharedParameters {
             error.printStackTrace();
         }
     }
+
+    public void printException(Exception error, String message) {
+        printlnError(message);
+        printException(error);
+    }
+
     public void printlnError(String message) {
-        if(!message.isEmpty()){
+        if (!message.isEmpty()) {
             montoyaApi.logging().logToError(message);
             printDebugMessage(message, "printlnError", true);
         }
     }
 
     public void printError(String message) {
-        if(!message.isEmpty()){
+        if (!message.isEmpty()) {
             montoyaApi.logging().logToError(message);
             printDebugMessage(message, "printError", true);
         }
     }
 
     public void printlnOutput(String message) {
-        if(!message.isEmpty()){
+        if (!message.isEmpty()) {
             montoyaApi.logging().logToOutput(message);
             printDebugMessage(message, "printlnOutput", true);
         }
     }
 
     public void printOutput(String message) {
-        if(!message.isEmpty()){
+        if (!message.isEmpty()) {
             montoyaApi.logging().logToOutput(message);
             printDebugMessage(message, "printOutput", true);
         }
